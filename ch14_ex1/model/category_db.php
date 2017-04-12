@@ -5,8 +5,10 @@ class CategoryDB {
         $query = 'SELECT * FROM categories
                   ORDER BY categoryID';
         $statement = $db->prepare($query);
-        $statement->execute();
-        
+        $statement->bindValue("category_id", $category_id);
+	$statement->execute();
+        $rows = $statement->closeCursor();
+
         $categories = array();
         foreach ($statement as $row) {
             $category = new Category($row['categoryID'],
@@ -25,7 +27,8 @@ class CategoryDB {
         $statement->execute();    
         $row = $statement->fetch();
         $statement->closeCursor();    
-        $category = new Category($row['categoryID'],
+        $category = CategoryDB::getCategory($row['categoryID']);
+	$category = new Category($row['categoryID'],
                                  $row['categoryName']);
         return $category;
     }

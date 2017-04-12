@@ -1,3 +1,4 @@
+
 <?php
 require('../model/database.php');
 require('../model/category.php');
@@ -25,13 +26,26 @@ if ($action == 'list_products') {
     $products = ProductDB::getProductsByCategory($category_id);
 
     include('product_list.php');
-} else if ($action == 'view_product') {
-    $categories = CategoryDB::getCategories();
-
-    $product_id = filter_input(INPUT_GET, 'product_id', 
-            FILTER_VALIDATE_INT);   
-    $product = ProductDB::getProduct($product_id);
-
+} else if ($action == 'delete_product') {
+    $product_id = filter_input(INPUT_POST, 'product_id',
+        FILTER_VALIDATE_INT);
+    $category_id = filter_input(INPUT_POST, 'category_id',
+        FILTER_VALIDATE_INT);
+    ProductDB::deleteProduct($product_id);
+    header("Location: .?category_id=$category_id");
+    } else if ($action == 'show_add_form') {
+        $categories = CategoryDB::getCategories();
+	include('product_add.php');
+    } else if ($action == 'add_product') {
+        $category_id = filter_input(INPUT_POST, 'category_id',
+	        FILTER_VALIDATE_INT);
+	$code = filter_input(INPUT_POST, 'code');
+	$name = filter_input(INPUT_POST, 'name');
+	$price = filter_input(INPUT_POST, 'price');
+    } else {
+        $category = CategoryDB::getCategory($category_id);
+	$product = newProduct($category, $code, $name, $price);
+	ProductDB::addProduct($product);
     include('product_view.php');
 }
 ?>

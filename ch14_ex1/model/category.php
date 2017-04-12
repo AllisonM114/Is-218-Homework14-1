@@ -3,7 +3,7 @@ class Category {
     private $id;
     private $name;
 
-    public function __construct($id, $name) {
+    public function __construct($id = NULL, $name = NULL) {
         $this->id = $id;
         $this->name = $name;
     }
